@@ -1,0 +1,29 @@
+version: '3'
+services:
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: 123456
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./dbdata:/var/lib/mysql/:delegated
+      - ./mysql/my.cnf:/etc/mysql/my.cnf:delegated
+  redis:
+    container_name: redis
+    image: redis:4.0
+    volumes:
+      - ./:/data:cached
+    ports:
+      - "6379:6379"
+#Volumes
+volumes:
+  dbdata:
+    driver: local
