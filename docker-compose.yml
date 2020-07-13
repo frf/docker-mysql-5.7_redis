@@ -1,9 +1,10 @@
 version: '3'
+
 services:
   #MySQL Service
-  db:
+  mysql:
     image: mysql:5.7.22
-    container_name: db
+    container_name: mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -14,16 +15,22 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./dbdata:/var/lib/mysql/:delegated
-      - ./mysql/my.cnf:/etc/mysql/my.cnf:delegated
+      - ./docker-configs/mysql/database:/var/lib/mysql:delegated
+    network_mode: bridge
   redis:
     container_name: redis
-    image: redis:4.0
+    image: redis
+    command: redis-server --requirepass Redis2019!
     volumes:
       - ./:/data:cached
     ports:
       - "6379:6379"
-#Volumes
-volumes:
-  dbdata:
-    driver: local
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - mysql
+    ports:
+      - 8001:80
+    environment:
+      - PMA_ARBITRARY=1
+    network_mode: bridge
