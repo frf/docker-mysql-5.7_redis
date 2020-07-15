@@ -1,36 +1,15 @@
-version: '3'
+# Use root/example as user/password credentials
+version: '3.1'
 
 services:
-  #MySQL Service
-  mysql:
-    image: mysql:5.7.22
-    container_name: mysql
-    restart: unless-stopped
-    tty: true
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
     ports:
-      - "3306:3306"
+      - 27017:27017
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: 123456
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./docker-configs/mysql/database:/var/lib/mysql:delegated
-    network_mode: bridge
-  redis:
-    container_name: redis
-    image: redis
-    command: redis-server --requirepass Redis2019!
-    volumes:
-      - ./:/data:cached
-    ports:
-      - "6379:6379"
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    links:
-      - mysql
-    ports:
-      - 8001:80
-    environment:
-      - PMA_ARBITRARY=1
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     network_mode: bridge
